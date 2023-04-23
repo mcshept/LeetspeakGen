@@ -15,7 +15,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking;
 use std::error::Error;
 
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 fn download_file_with_progress(url: &str, output_file: &PathBuf) -> Result<(), Box<dyn Error>> {
     let client = reqwest::blocking::Client::new();
@@ -58,7 +58,7 @@ fn get_file_content(url: &str) -> String {
 
 
 fn main() {
-    let version = "1.0.1-hotfix-1";
+    let version = "1.0.1-hotfix-2";
 
     println!("[⌛] Checking...");
     let url = "https://raw.githubusercontent.com/mcshept/LeetspeakGen/master/ver.txt";
@@ -69,7 +69,7 @@ fn main() {
         let mut exit = String::new();
         io::stdin().read_line(&mut exit).expect("error: 1x11111");
     } else {
-        println!("[✔️] Done!\nVersion: {}", content);
+        println!("[✔️] Done!\nLatest Version: {}    Your Version: {}", content, version);
         if content.trim().eq(version) {
             println!("[✔️] You are using the latest version!");
         } else {
@@ -86,17 +86,10 @@ fn main() {
                     match download_file_with_progress(url, &output_file) {
                         Ok(()) => {
                             println!("[✔️] Download complete");
-                            let mut child = Command::new("cmd")
-                                .args(&["/C", output_file.display().to_string().as_str()])
+                            Command::new(output_file)
                                 .spawn()
                                 .expect("Failed to execute command");
 
-                            let exit_status = child.wait().expect("Failed to wait on child");
-                            if exit_status.success() {
-                                println!("File opened successfully!");
-                            } else {
-                                println!("Failed to open file!");
-                            }
                             std::process::exit(0);
                         }
                         Err(err) => {
