@@ -56,7 +56,7 @@ fn get_file_content(url: &str) -> String {
 
 
 fn main() {
-    let version = "1.0.1";
+    let version = "1.0.2";
 
     println!("[⌛] Checking...");
     let url = "https://raw.githubusercontent.com/mcshept/LeetspeakGen/master/ver.txt";
