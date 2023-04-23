@@ -1,21 +1,19 @@
 use std::io;
-use std::io::*;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, ErrorKind, copy, Seek, SeekFrom, Cursor, Read, Write};
 use std::net::TcpStream;
 use std::str::from_utf8;
 use reqwest::blocking::{Client, get};
-use std::io::{ErrorKind, copy, Seek, SeekFrom};
 use reqwest::Url;
 use std::fs::File;
-use std::io::{Cursor, Read, Write};
 use std::path::PathBuf;
 use std::result::Result;
 
 use indicatif::{ProgressBar, ProgressStyle};
-use reqwest::blocking;
 use std::error::Error;
 
 use std::process::{Command, Stdio};
+use clipboard::ClipboardContext;
+use clipboard::ClipboardProvider;
 
 fn download_file_with_progress(url: &str, output_file: &PathBuf) -> Result<(), Box<dyn Error>> {
     let client = reqwest::blocking::Client::new();
@@ -58,7 +56,7 @@ fn get_file_content(url: &str) -> String {
 
 
 fn main() {
-    let version = "1.0.1-hotfix-2";
+    let version = "1.0.1";
 
     println!("[⌛] Checking...");
     let url = "https://raw.githubusercontent.com/mcshept/LeetspeakGen/master/ver.txt";
@@ -117,7 +115,7 @@ fn main() {
                 println!("Enter a text to convert:");
                 let mut n_text = String::new();
                 io::stdin().read_line(&mut n_text).expect("error: 1x11111");
-                println!("{}", n_text.to_lowercase()
+                let text = n_text.to_lowercase()
                     .replace("a", "4")
                     .replace("b", "8")
                     .replace("c", "c")
@@ -143,7 +141,12 @@ fn main() {
                     .replace("w", "w")
                     .replace("x", "x")
                     .replace("y", "y")
-                    .replace("z", "2"));
+                    .replace("z", "2");
+                println!("{}", text);
+
+                let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
+                ctx.set_contents(text).unwrap();
+                println!("The text has been copied to your clipboard! (Press CTRL + V to paste it)");
                 println!("Press any key to exit...");
                 let mut exit = String::new();
                 io::stdin().read_line(&mut exit).expect("error: 1x11111");
@@ -152,7 +155,8 @@ fn main() {
                 println!("Enter a text to convert:");
                 let mut l_text = String::new();
                 io::stdin().read_line(&mut l_text).expect("error: 1x11111");
-                println!("{}", l_text.to_lowercase()
+
+                let text = l_text.to_lowercase()
                     .replace("4", "a")
                     .replace("8", "b")
                     .replace("c", "c")
@@ -178,7 +182,11 @@ fn main() {
                     .replace("w", "w")
                     .replace("x", "x")
                     .replace("y", "y")
-                    .replace("2", "z"));
+                    .replace("2", "z");
+                println!("{}", text);
+                let mut ctx: ClipboardContext = ClipboardProvider::new().unwrap();
+                ctx.set_contents(text).unwrap();
+                println!("The text has been copied to your clipboard! (Press CTRL + V to paste it)");
                 println!("Press any key to exit...");
                 let mut exit = String::new();
                 io::stdin().read_line(&mut exit).expect("error: 1x11111");
