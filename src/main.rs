@@ -58,7 +58,7 @@ fn get_file_content(url: &str) -> String {
 
 
 fn main() {
-    let version = "1.0.1";
+    let version = "1.0.1-hotfix";
 
     println!("[⌛] Checking...");
     let url = "https://raw.githubusercontent.com/mcshept/LeetspeakGen/master/ver.txt";
@@ -80,7 +80,7 @@ fn main() {
             match update.trim().to_lowercase().as_str() {
                 "y" | "yes" => {
                     println!("[⌛] Downloading new file...");
-                    let url = "https://github.com/mcshept/LeetspeakGen/releases/download/leetspeak/LeetspeakGen.Installer.exe";
+                    let url = "https://github.com/mcshept/LeetspeakGen/releases/latest/download/LeetspeakGen.Installer.exe";
                     let output_file = PathBuf::from("./LeetspeakGen.Installer.exe");
 
                     match download_file_with_progress(url, &output_file) {
