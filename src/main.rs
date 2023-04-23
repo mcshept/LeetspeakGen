@@ -58,7 +58,7 @@ fn get_file_content(url: &str) -> String {
 
 
 fn main() {
-    let version = "1.0.1-hotfix";
+    let version = "1.0.1-hotfix-1";
 
     println!("[⌛] Checking...");
     let url = "https://raw.githubusercontent.com/mcshept/LeetspeakGen/master/ver.txt";
@@ -81,12 +81,22 @@ fn main() {
                 "y" | "yes" => {
                     println!("[⌛] Downloading new file...");
                     let url = "https://github.com/mcshept/LeetspeakGen/releases/latest/download/LeetspeakGen.Installer.exe";
-                    let output_file = PathBuf::from("./LeetspeakGen.Installer.exe");
+                    let output_file = PathBuf::from("LeetspeakGen.Installer.exe");
 
                     match download_file_with_progress(url, &output_file) {
                         Ok(()) => {
                             println!("[✔️] Download complete");
-                            Command::new(output_file).output();
+                            let mut child = Command::new("cmd")
+                                .args(&["/C", output_file.display().to_string().as_str()])
+                                .spawn()
+                                .expect("Failed to execute command");
+
+                            let exit_status = child.wait().expect("Failed to wait on child");
+                            if exit_status.success() {
+                                println!("File opened successfully!");
+                            } else {
+                                println!("Failed to open file!");
+                            }
                             std::process::exit(0);
                         }
                         Err(err) => {
